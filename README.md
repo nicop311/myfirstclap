@@ -28,7 +28,7 @@ cargo build --workspace
 
 ### Build With `goreleaser`
 
-> NOTE: This feature is not ready yet.
+> **NOTE: This feature is not ready yet.**
 
 See the Goreleaser Rust documentation here:
 * https://goreleaser.com/customization/builds/rust/
@@ -104,4 +104,70 @@ or
   "git_sha": "4a9f71d19be9aecc01dfe39f58d0675c86289597",
   "os_version": "Linux (Debian GNU/Linux 12)"
 }
+```
+
+This `version` command could became a crate from clap, like clap-version, which could give the same
+result.
+
+### Print very detailed version information in JSON format (full vergen)
+
+This is probably overkil. This command is only here to see the full features from vergen.
+I might add some of these fields to the regular `version -o json` command.
+
+```bash
+./target/debug/myfirstclap version --output full | jq
+```
+
+```json
+{
+  "build_date": "2025-03-21",
+  "build_timestamp": "2025-03-21T13:46:51.609678254Z",
+  "cargo_debug": "true",
+  "cargo_dependencies": "anyhow 1.0.97,serde 1.0.219,serde_json 1.0.140,vergen-git2 1.0.5",
+  "cargo_features": "",
+  "cargo_opt_level": "0",
+  "cargo_target_triple": "x86_64-unknown-linux-gnu",
+  "git_branch": "add-flags",
+  "git_commit_author_email": "18116277+nicop311@users.noreply.github.com",
+  "git_commit_author_name": "nicop311",
+  "git_commit_count": "5",
+  "git_commit_date": "2025-03-21",
+  "git_commit_message": "remove main from root project dir and change the name of the binary produced by the cli crate to use the name of the project insteadSigned-off-by: nicop311 <18116277+nicop311@users.noreply.github.com>",
+  "git_commit_timestamp": "2025-03-21T13:43:50.000000000Z",
+  "git_describe": "04c8644",
+  "git_dirty": "false",
+  "git_sha": "04c86446f921d24ae6a10988dd807676d2cb94dc",
+  "rustc_channel": "stable",
+  "rustc_commit_date": "2025-02-17",
+  "rustc_commit_hash": "4d91de4e48198da2e33413efdcd9cd2cc0c46688",
+  "rustc_host_triple": "x86_64-unknown-linux-gnu",
+  "rustc_llvm_version": "19.1",
+  "rustc_semver": "1.85.0",
+  "sysinfo_cpu_brand": "Intel(R) Core(TM) Ultra 7 155U",
+  "sysinfo_cpu_core_count": "12",
+  "sysinfo_cpu_frequency": "1700",
+  "sysinfo_cpu_name": "cpu0,cpu1,cpu2,cpu3,cpu4,cpu5,cpu6,cpu7,cpu8,cpu9,cpu10,cpu11,cpu12,cpu13",
+  "sysinfo_cpu_vendor": "GenuineIntel",
+  "sysinfo_memory": "Unknown",
+  "sysinfo_name": "Debian GNU/Linux",
+  "sysinfo_os_version": "Linux (Debian GNU/Linux 12)",
+  "sysinfo_user": "root"
+}
+```
+
+### Log level
+
+The root CLI support setting the log level.
+
+```bash
+./target/debug/myfirstclap --log-level=trace  serve hello
+```
+
+```log
+Listening on http://127.0.0.1:3000
+ 2025-03-21T13:53:36.571Z INFO  serve::hello > such information
+ 2025-03-21T13:53:36.571Z DEBUG serve::hello > This is a debug message
+ 2025-03-21T13:53:36.571Z TRACE serve::hello > This trace will be hard to wash
+ 2025-03-21T13:53:36.571Z WARN  serve::hello > o_O
+ 2025-03-21T13:53:36.571Z ERROR serve::hello > much error
 ```
