@@ -31,12 +31,12 @@ enum ServeCommands {
     Hello,
 }
 
-pub fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+pub fn run() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let cli = Cli::parse();
 
     // Initialize logging and set log level
     env::set_var("RUST_LOG", &cli.log_level);
-    pretty_env_logger::init();
+    pretty_env_logger::init_timed();
 
     match cli.command {
         Commands::Version { output } => version::run(output)?,
