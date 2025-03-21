@@ -171,3 +171,22 @@ Listening on http://127.0.0.1:3000
  2025-03-21T13:53:36.571Z WARN  serve::hello > o_O
  2025-03-21T13:53:36.571Z ERROR serve::hello > much error
 ```
+
+### Build terminal completion scripts
+
+```
+ myfirstclap completion -h
+Completion scripts for various terminals
+
+Usage: myfirstclap completion [OPTIONS]
+
+Options:
+  -s, --shell <SHELL>  Supported values: bash. [default: bash] [possible values: bash, elvish, fish, powershell, zsh]
+  -h, --help           Print help
+```
+
+Example with fish
+
+```bash
+myfirstclap completion -s fish > ~/.config/fish/completions/myfirstclap.fish
+```
