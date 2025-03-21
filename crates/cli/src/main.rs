@@ -16,8 +16,9 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
+    /// A more detailed version command with information from the build.
     Version {
-        #[arg(short, long, default_value = "text")]
+        #[arg(short, long, default_value = "text", help = "Supported values: text, json, full.")]
         output: String,
     },
     Serve {
