@@ -31,7 +31,7 @@ enum ServeCommands {
     Hello,
 }
 
-pub fn run() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let cli = Cli::parse();
 
     // Initialize logging and set log level
