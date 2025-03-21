@@ -1,6 +1,8 @@
-use clap::{Parser, Subcommand};
+use clap::{Parser, Subcommand, CommandFactory};
+use clap_complete::{generate, Shell};
 use anyhow::Result;
 use std::env;
+use std::io;
 use pretty_env_logger;
 
 #[derive(Parser)]
@@ -21,9 +23,15 @@ enum Commands {
         #[arg(short, long, default_value = "text", help = "Supported values: text, json, full.")]
         output: String,
     },
+    /// A collection of several trivial servers
     Serve {
         #[command(subcommand)]
         command: ServeCommands,
+    },
+    /// Completion scripts for various terminals.
+    Completion {
+        #[arg(short, long, default_value = "bash", help = "Supported values: bash.")]
+        shell: Shell,
     },
 }
 
@@ -44,6 +52,10 @@ fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
         Commands::Serve { command } => match command {
             ServeCommands::Hello => serve::hello::run()?,
         },
+        Commands::Completion { shell } => {
+            let mut cmd = Cli::command();
+            generate(shell, &mut cmd, "myfirstclap", &mut io::stdout());
+        }
     }
     Ok(())
 }

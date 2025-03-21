@@ -9,6 +9,7 @@ path = "src/main.rs"
 
 [dependencies]
 clap = { workspace = true }
+clap_complete = { workspace = true }
 anyhow = { workspace = true }
 version = { path = "../version" }
 serve = { path = "../serve" }
