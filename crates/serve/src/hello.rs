@@ -1,12 +1,12 @@
 #![deny(warnings)]
 
 use std::convert::Infallible;
-use log::{info, warn, error};
+use log::{info, debug, warn, trace, error};
 
 use hyper::service::{make_service_fn, service_fn};
 use hyper::{Body, Request, Response, Server};
 
-use pretty_env_logger;
+//use pretty_env_logger;
 
 async fn hello(_: Request<Body>) -> Result<Response<Body>, Infallible> {
     Ok(Response::new(Body::from("Hello World from serve hello.rs!")))
@@ -14,7 +14,7 @@ async fn hello(_: Request<Body>) -> Result<Response<Body>, Infallible> {
 
 #[tokio::main]
 pub async fn run() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    pretty_env_logger::init();
+    //pretty_env_logger::init();
 
     // For every connection, we must make a `Service` to handle all
     // incoming HTTP requests on said connection.
@@ -31,6 +31,8 @@ pub async fn run() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
 
     println!("Listening on http://{}", addr);
     info!("such information");
+    debug!("This is a debug message");
+    trace!("This trace will be hard to wash");
     warn!("o_O");
     error!("much error");
 
