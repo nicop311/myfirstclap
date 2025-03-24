@@ -28,7 +28,7 @@ cargo build --workspace
 
 ### Build With `goreleaser`
 
-> **NOTE: This feature is not ready yet.**
+> **NOTE: Tested only on Podman running on x86 Arch linux**
 
 See the Goreleaser Rust documentation here:
 * https://goreleaser.com/customization/builds/rust/
@@ -55,6 +55,42 @@ Then build the project using Goreleaser:
 
 ```bash
 goreleaser release --snapshot --clean --skip sign,publish,validate,ko,sbom
+```
+
+#### Use `goreleaser-rust-cross`
+
+> **NOTE: Tested only on Podman running on x86 Arch linux**
+
+Check this project: https://github.com/goreleaser/goreleaser-rust-cross
+
+```bash
+podman pull ghcr.io/goreleaser/goreleaser-rust-cross:v2.8.0
+```
+
+```bash
+podman run -it --rm -v $PWD:/pwd --workdir /pwd ghcr.io/goreleaser/goreleaser-rust-cross:v2.8.0 release --snapshot --clean --skip sign,publish,validate,ko,sbom
+```
+
+```
+tree dist/
+dist/
+├── artifacts.json
+├── config.yaml
+├── linux-builds_x86_64-unknown-linux-gnu
+│   └── myfirstclap
+├── metadata.json
+├── myfirstclap-0.2.1SNAPSHOT_196deb7-1-x86_64.pkg.tar.zst
+├── myfirstclap-0.2.1~SNAPSHOT_196deb7-1.x86_64.rpm
+├── myfirstclap_0.2.1~SNAPSHOT-196deb7_amd64.deb
+├── myfirstclap_0.2.1-SNAPSHOT-196deb7_checksums.txt
+├── myfirstclap_0.2.1_SNAPSHOT-196deb7_x86_64.apk
+├── myfirstclap_Linux_x86_64.tar.zst
+├── myfirstclap_Windows_arm64.zip
+├── myfirstclap_Windows_x86_64.zip
+├── win-msvc-builds_aarch64-pc-windows-msvc
+│   └── myfirstclap.exe
+└── win-msvc-builds_x86_64-pc-windows-msvc
+    └── myfirstclap.exe
 ```
 
 ## Usage

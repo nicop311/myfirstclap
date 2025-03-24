@@ -1,4 +1,12 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+
 version: 2
+
+project_name: myfirstclap
+
+before:
+  hooks:
+    - cargo fetch --locked
 
 builds:
   # You can have multiple builds defined as a yaml list
@@ -6,7 +14,7 @@ builds:
     # ID of the build.
     #
     # Default: Project directory name.
-    id: "myfirstclap"
+    id: linux-builds
 
     # Use rust.
     builder: rust
@@ -21,6 +29,7 @@ builds:
     # Default: [ "x86_64-unknown-linux-gnu", "x86_64-apple-darwin", "x86_64-pc-windows-gnu", "aarch64-unknown-linux-gnu", "aarch64-apple-darwin" ]
     targets:
       - x86_64-unknown-linux-gnu
+      #- aarch64-unknown-linux-gnu
 
     # Path to project's (sub)directory containing the code.
     # This is the working directory for the Zig build command(s).
@@ -70,6 +79,63 @@ builds:
     # If true, skip the build.
     # Useful for library projects.
     skip: false
+
+  - id: mac-builds
+    # Use rust.
+    builder: rust
+    binary: myfirstclap
+    targets:
+      - x86_64-apple-darwin
+      - aarch64-apple-darwin
+    dir: .
+    command: build
+    flags:
+      - --release
+      - --package=cli # when using cargo-workspaces
+    skip: true
+
+  - id: win-gnu-builds
+    # Use rust.
+    builder: rust
+    binary: myfirstclap
+    targets:
+      - x86_64-pc-windows-gnu
+    dir: .
+    command: build
+    flags:
+      - --release
+      - --package=cli # when using cargo-workspaces
+    skip: true
+
+  - id: win-msvc-builds
+    binary: myfirstclap
+    builder: rust
+    tool: cargo-xwin
+    command: build
+    flags: 
+      - --release
+      - --package=cli
+    targets:
+      - x86_64-pc-windows-msvc
+      - aarch64-pc-windows-msvc
+    skip: false
+
+archives:
+  - formats:
+      - tar.zst
+    # this name template makes the OS and Arch compatible with the results of `uname`.
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+    # use zip for windows archives
+    format_overrides:
+      - goos: windows
+        formats:
+          - zip
+
 
 nfpms:
   - file_name_template: "{{ .ConventionalFileName }}"
