@@ -297,6 +297,7 @@ dependencies = [
  "anyhow",
  "clap",
  "clap_complete",
+ "log",
  "pretty_env_logger",
  "serve",
  "version",
