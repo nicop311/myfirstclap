@@ -77,9 +77,9 @@ enum Commands {
             help = "Output format in STDOUT.")]
         output: VersionOutputFormat,
         #[arg(long,
-            default_value_t = true,
-            help = "Pretty print JSON.")]
-        pretty: bool,
+            default_value_t = false,
+            help = "Do not pretty print JSON.")]
+        no_pretty: bool,
     },
     /// A collection of several trivial servers
     Serve {
@@ -110,7 +110,7 @@ fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     pretty_env_logger::init_timed();
 
     match cli.command {
-        Commands::Version { output, pretty } => version::run(output.to_string(), pretty)?,
+        Commands::Version { output, no_pretty } => version::run(output.to_string(), !no_pretty)?,
         Commands::Serve { command } => match command {
             ServeCommands::Hello => serve::hello::run()?,
         },

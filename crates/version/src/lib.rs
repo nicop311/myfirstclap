@@ -109,6 +109,24 @@ pub fn get_full_version_info() -> serde_json::Value {
     })
 }
 
+/// Executes the version command, outputting version information in the specified format.
+/// 
+/// # Arguments
+/// 
+/// * `output` - A string specifying the desired output format. 
+///              Supported formats are "json" for JSON format and "full" for a detailed JSON format with all available information.
+/// * `pretty` - A boolean indicating whether the JSON output should be pretty-printed.
+///
+/// # Returns
+///
+/// * `Result<()>` - Returns an Ok result if the operation is successful. Any error during serialization will return an Err.
+///
+/// # Behavior
+///
+/// Depending on the `output` argument, the function will:
+/// - Output version information in JSON format if `output` is "json".
+/// - Output detailed version information in JSON format if `output` is "full".
+/// - Default to printing just the `git_describe` if any other format is specified.
 pub fn run(output: String, pretty: bool) -> Result<()> {
     let version_info = get_version();
     let full_version_info = get_full_version_info();
