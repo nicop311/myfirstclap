@@ -35,12 +35,7 @@ struct Cli {
     #[arg(long, 
         default_value = "info",
         value_enum,
-        help = format!("Set the log verbosity level ({}, {}, {}, {}, {})", 
-                        LogLevel::Error.to_string(),
-                        LogLevel::Warn.to_string(),
-                        LogLevel::Info.to_string(),
-                        LogLevel::Debug.to_string(),
-                        LogLevel::Trace.to_string() ))]
+        help = "Set the log verbosity level" )]
         log_level: LogLevel,
 
     #[command(subcommand)]
@@ -92,7 +87,7 @@ enum Commands {
             long,
             default_value = "bash",
             value_enum,
-            help = "Supported values: bash, elvish, fish, powershell, zsh.")]
+            help = "Target shell.")]
         shell: Shell,
     },
 }
