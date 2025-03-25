@@ -101,40 +101,44 @@ dist/
 
 ## Usage
 
-### Print help
+### Print help message
 
 ```bash
- ./target/debug/myfirstclap 
+myfirstclap 
 ```
 
 ```bash
-Usage: myfirstclap <COMMAND>
+Usage: myfirstclap [OPTIONS] <COMMAND>
 
 Commands:
-  version  
-  serve    
-  help     Print this message or the help of the given subcommand(s)
+  version     A more detailed version command with information from the build
+  serve       A collection of several trivial servers
+  completion  Completion scripts for various terminals
+  help        Print this message or the help of the given subcommand(s)
 
 Options:
-  -h, --help     Print help
-  -V, --version  Print version
+      --log-level <LOG_LEVEL>  Set the log verbosity level [default: info] [possible values: error, warn, info, debug, trace]
+  -h, --help                   Print help
+  -V, --version                Print version
 ```
 
 ### Print simple oneliner version information
 
 ```bash
-./target/debug/myfirstclap version
+myfirstclap version
+```
+```
 4a9f71d
 ```
 
 ### Print detailed version information in JSON format
 
 ```bash
-./target/debug/myfirstclap version --output json
+myfirstclap version --output json
 ```
 or 
 ```bash
-./target/debug/myfirstclap version -o json
+myfirstclap version -o json
 ```
 
 ```json
@@ -157,7 +161,7 @@ This is probably overkil. This command is only here to see the full features fro
 I might add some of these fields to the regular `version -o json` command.
 
 ```bash
-./target/debug/myfirstclap version --output full | jq
+myfirstclap version --output full | jq
 ```
 
 ```json
@@ -202,7 +206,7 @@ I might add some of these fields to the regular `version -o json` command.
 The root CLI support setting the log level.
 
 ```bash
-./target/debug/myfirstclap --log-level=trace  serve hello
+myfirstclap --log-level=trace  serve hello
 ```
 
 ```log
@@ -227,7 +231,7 @@ Options:
   -h, --help           Print help
 ```
 
-Example with fish
+#### Example with fish
 
 ```bash
 myfirstclap completion -s fish > ~/.config/fish/completions/myfirstclap.fish
