@@ -1,5 +1,11 @@
 # `myfirstclap`: Testing Rust, Clap & Vergen
 
+![Rust](https://img.shields.io/badge/rust-%23000000.svg?style=for-the-badge&logo=rust&logoColor=white)
+[![Licence](https://img.shields.io/github/license/Ileriayo/markdown-badges?style=for-the-badge)](./LICENSE)
+[![goreleaser](https://github.com/nicop311/myfirstclap/actions/workflows/release.yml/badge.svg)](https://github.com/nicop311/myfirstclap/actions/workflows/release.yml)
+<hr>
+<hr>
+
 This repository contains a sample Rust project that demonstrates the usage of the Clap and Vergen crates for command-line argument parsing and build-time information generation, respectively.
 
 The project showcases how to define and parse command-line arguments using Clap, and how to embed build-time information such as the current git commit hash and build timestamp using Vergen.
