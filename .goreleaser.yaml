@@ -118,7 +118,7 @@ builds:
     targets:
       - x86_64-pc-windows-msvc
       - aarch64-pc-windows-msvc
-    skip: false
+    skip: true
 
 archives:
   - formats:
