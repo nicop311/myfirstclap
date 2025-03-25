@@ -13,7 +13,7 @@ pub struct VersionInfo {
     os_version: &'static str,
 }
 
-// Get a reasonable amount of information from git and from build thanks to vergen.
+/// Get a reasonable amount of information from git and from build thanks to vergen.
 pub fn get_version() -> VersionInfo {
     VersionInfo {
         build_date: env!("VERGEN_BUILD_DATE"),
@@ -109,18 +109,27 @@ pub fn get_full_version_info() -> serde_json::Value {
     })
 }
 
-pub fn run(output: String) -> Result<()> {
+pub fn run(output: String, pretty: bool) -> Result<()> {
     let version_info = get_version();
+    let full_version_info = get_full_version_info();
 
     match output.as_str() {
         "json" => {
             // Use the serialized version info
             let version_info = get_version();
-            println!("{}", serde_json::to_string_pretty(&version_info)?);
+            if pretty {
+                println!("{}", serde_json::to_string_pretty(&version_info)?);
+            } else {
+                println!("{}", serde_json::to_string(&version_info)?);
+            }
         }
         "full" => {
             // Output all available version information in JSON
-            println!("{}", get_full_version_info().to_string());
+            if pretty {
+                println!("{}", serde_json::to_string_pretty(&full_version_info)?);
+            } else {
+                println!("{}", full_version_info.to_string());
+            }
         }
         _ => {
             // Default output: print just the git_describe
