@@ -77,7 +77,7 @@ enum Commands {
             help = "Output format in STDOUT.")]
         output: VersionOutputFormat,
         #[arg(long,
-            default_value = "true",
+            default_value_t = true,
             help = "Pretty print JSON.")]
         pretty: bool,
     },
