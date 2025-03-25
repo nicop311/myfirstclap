@@ -220,14 +220,16 @@ Listening on http://127.0.0.1:3000
 
 ### Build terminal completion scripts
 
+```bash
+myfirstclap completion -h
 ```
- myfirstclap completion -h
+```
 Completion scripts for various terminals
 
 Usage: myfirstclap completion [OPTIONS]
 
 Options:
-  -s, --shell <SHELL>  Supported values: bash. [default: bash] [possible values: bash, elvish, fish, powershell, zsh]
+  -s, --shell <SHELL>  Target shell. [default: bash] [possible values: bash, elvish, fish, powershell, zsh]
   -h, --help           Print help
 ```
 
