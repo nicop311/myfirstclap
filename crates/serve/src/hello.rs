@@ -2,6 +2,7 @@
 
 use std::convert::Infallible;
 use std::net::SocketAddr;
+use log::{info, debug, warn, trace, error};
 
 use bytes::Bytes;
 use http_body_util::Full;
@@ -27,7 +28,12 @@ pub async fn run() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
 
     // Bind to the port and listen for incoming TCP connections
     let listener = TcpListener::bind(addr).await?;
-    println!("Listening on http://{}", addr);
+    info!("Listening on http://{}", addr);
+    info!("such information");
+    debug!("This is a debug message");
+    trace!("This trace will be hard to wash");
+    warn!("o_O");
+    error!("much error");
     loop {
         // When an incoming TCP connection is received grab a TCP stream for
         // client<->server communication.
@@ -53,7 +59,7 @@ pub async fn run() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
                 .serve_connection(io, service_fn(hello))
                 .await
             {
-                println!("Error serving connection: {:?}", err);
+                error!("Error serving connection: {:?}", err);
             }
         });
     }
