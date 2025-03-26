@@ -21,8 +21,6 @@ async fn hello(_: Request<impl hyper::body::Body>) -> Result<Response<Full<Bytes
 
 #[tokio::main]
 pub async fn run() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    pretty_env_logger::init();
-
     // This address is localhost
     let addr: SocketAddr = ([127, 0, 0, 1], 3000).into();
 
