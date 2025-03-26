@@ -12,6 +12,30 @@ The project showcases how to define and parse command-line arguments using Clap,
 
 **The only purpose of this project is training and learning.**
 
+- [`myfirstclap`: Testing Rust, Clap \& Vergen](#myfirstclap-testing-rust-clap--vergen)
+  - [Quickstart](#quickstart)
+  - [Build the project](#build-the-project)
+    - [Build With Cargo](#build-with-cargo)
+    - [Build With `goreleaser`](#build-with-goreleaser)
+      - [You do not have goreleaser installed ? Use this method to create a temp container](#you-do-not-have-goreleaser-installed--use-this-method-to-create-a-temp-container)
+      - [Use `goreleaser-rust-cross`](#use-goreleaser-rust-cross)
+  - [Usage](#usage)
+    - [Print help message](#print-help-message)
+    - [Print simple oneliner version information](#print-simple-oneliner-version-information)
+    - [Print detailed version information in JSON format](#print-detailed-version-information-in-json-format)
+    - [Print very detailed version information in JSON format (full vergen)](#print-very-detailed-version-information-in-json-format-full-vergen)
+    - [Log level](#log-level)
+    - [Build terminal completion scripts](#build-terminal-completion-scripts)
+      - [Example with fish](#example-with-fish)
+
+
+## Quickstart
+
+Download & install the latest linux x86 `.deb`, `.apk`, `.rpm`, archlinux `pkg.tar.zst` or archived sbinary 
+from the [release page](https://github.com/nicop311/myfirstclap/releases).
+
+And use the help and completion commands to get started. And check the [Usage](#usage) section.
+
 ## Build the project
 
 ### Build With Cargo
