@@ -1,9 +1,11 @@
-use clap::{Parser, Subcommand, CommandFactory, ValueEnum};
-use clap_complete::{generate, Shell};
 use anyhow::Result;
+use clap_complete::{generate, Shell};
+use clap::{Parser, Subcommand, CommandFactory, ValueEnum};
+use pretty_env_logger;
 use std::env;
 use std::io;
-use pretty_env_logger;
+
+use log::info;
 
 /// a local enum that mirrors the log::Level enum and derives the necessary traits
 #[derive(ValueEnum, Clone)]
@@ -28,10 +30,11 @@ impl ToString for LogLevel {
     }
 }
 
+/// Root CLI of myfirstclap.
 #[derive(Parser)]
 #[command(name = "myfirstclap")]
 #[command(version = version::get_describe())]
-struct Cli {
+pub struct Cli {
     #[arg(long, 
         default_value = "info",
         value_enum,
@@ -61,6 +64,7 @@ impl ToString for VersionOutputFormat {
     }
 }
 
+/// Level 1 subcommands for myfirstclap.
 #[derive(Subcommand)]
 enum Commands {
     /// A more detailed version command with information from the build.
@@ -90,13 +94,34 @@ enum Commands {
             help = "Target shell.")]
         shell: Shell,
     },
+    /// NOT WORKING YET Generate a man page for this application
+    Man {
+        #[arg(short, long, default_value = "myfirstclap.1")]
+        output: String,
+    },
 }
 
+/// Level 2 subcommands of serve
 #[derive(Subcommand)]
 enum ServeCommands {
     Hello,
 }
 
+/// Main entry point for the CLI application.
+///
+/// This function parses the command-line arguments, initializes the logging mechanism,
+/// and executes the appropriate subcommand based on the user's input. The supported
+/// commands include:
+///
+/// - `Version`: Outputs version information in the specified format (text, json, or full).
+/// - `Serve`: Runs a collection of trivial servers, specifically a "Hello" server in this case.
+/// - `Completion`: Generates shell completion scripts for various terminals.
+/// - `Man`: Generates a man page for the application.
+///
+/// # Returns
+///
+/// Returns a `Result` indicating success or failure. Any errors in subcommand execution
+/// will be propagated upwards.
 fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let cli = Cli::parse();
 
@@ -112,6 +137,9 @@ fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
         Commands::Completion { shell } => {
             let mut cmd = Cli::command();
             generate(shell, &mut cmd, "myfirstclap", &mut io::stdout());
+        }
+        Commands::Man { output } => {
+            info!("Man page feature is not ready yet. The man page file {} was not generated.", output);
         }
     }
     Ok(())

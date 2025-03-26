@@ -8,10 +8,12 @@ name = "myfirstclap"
 path = "src/main.rs"
 
 [dependencies]
+anyhow = { workspace = true }
 clap = { workspace = true }
 clap_complete = { workspace = true }
-anyhow = { workspace = true }
-version = { path = "../version" }
-serve = { path = "../serve" }
-pretty_env_logger = { workspace = true }
 log = { workspace = true }
+pretty_env_logger = { workspace = true }
+serve = { path = "../serve" }
+version = { path = "../version" }
+
+#clap_mangen = { workspace = true } # for man pages
