@@ -30,7 +30,7 @@ The project showcases how to define and parse command-line arguments using Clap,
 
 ## 1. Quickstart
 
-Download & install the latest linux x86 `.deb`, `.apk`, `.rpm`, archlinux `pkg.tar.zst` or archived sbinary 
+Download & install the latest linux x86 `.deb`, `.apk`, `.rpm`, archlinux `pkg.tar.zst` or archived binary 
 from the [release page](https://github.com/nicop311/myfirstclap/releases).
 
 And use the help and completion commands to get started. And check the [Usage](#usage) section.

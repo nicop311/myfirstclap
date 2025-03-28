@@ -37,6 +37,7 @@ impl ToString for LogLevel {
 pub struct Cli {
     #[arg(long, 
         default_value = "info",
+        env = "MYFIRSTCLAP_LOG_LEVEL",
         value_enum,
         help = "Set the log verbosity level" )]
         log_level: LogLevel,
