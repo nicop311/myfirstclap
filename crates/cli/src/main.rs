@@ -105,7 +105,22 @@ enum Commands {
 /// Level 2 subcommands of serve
 #[derive(Subcommand)]
 enum ServeCommands {
-    Hello,
+    /// Start the Hello server
+    Hello {
+        /// The hostname to bind to (default: 127.0.0.1)
+        #[arg(short, 
+            long,
+            env = "MYFIRSTCLAP_HOSTNAME",
+            default_value = "127.0.0.1")]
+        hostname: String,
+
+        /// The port to listen on (default: 3000)
+        #[arg(short, 
+            long,
+            env = "MYFIRSTCLAP_PORT",
+            default_value_t = 3000)]
+        port: u16,
+    },
 }
 
 /// Main entry point for the CLI application.
@@ -133,7 +148,7 @@ fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     match cli.command {
         Commands::Version { output, no_pretty } => version::run(output.to_string(), !no_pretty)?,
         Commands::Serve { command } => match command {
-            ServeCommands::Hello => serve::hello::run()?,
+            ServeCommands::Hello { hostname, port } => serve::hello::run(&hostname, port)?,
         },
         Commands::Completion { shell } => {
             let mut cmd = Cli::command();

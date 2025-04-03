@@ -1,7 +1,7 @@
 #![deny(warnings)]
 
 use std::convert::Infallible;
-use std::net::SocketAddr;
+use std::net::ToSocketAddrs;
 use log::{info, debug, warn, trace, error};
 
 use bytes::Bytes;
@@ -20,9 +20,14 @@ async fn hello(_: Request<impl hyper::body::Body>) -> Result<Response<Full<Bytes
 }
 
 #[tokio::main]
-pub async fn run() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+pub async fn run(hostname: &str, port: u16) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     // This address is localhost
-    let addr: SocketAddr = ([127, 0, 0, 1], 3000).into();
+    let addr = (hostname, port).to_socket_addrs()?
+        .filter(|addr| addr.is_ipv4()) // Prefer IPv4 over IPv6
+        .next()
+        .or_else(|| (hostname, port).to_socket_addrs().ok()?.next()) // Fallback to any
+        .ok_or_else(|| format!("Could not resolve hostname: {}", hostname))?;
+
 
     // Bind to the port and listen for incoming TCP connections
     let listener = TcpListener::bind(addr).await?;
