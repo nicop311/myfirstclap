@@ -74,10 +74,12 @@ enum Commands {
             long,
             default_value = "text",
             value_enum,
+            env = "MYFIRSTCLAP_VERSION_OUTPUT",
             help = "Output format in STDOUT.")]
         output: VersionOutputFormat,
         #[arg(long,
             default_value_t = false,
+            env = "MYFIRSTCLAP_VERSION_PRETTY",
             help = "Do not pretty print JSON.")]
         no_pretty: bool,
     },
@@ -92,6 +94,7 @@ enum Commands {
             long,
             default_value = "bash",
             value_enum,
+            env = "MYFIRSTCLAP_COMPLETION_SHELL",
             help = "Target shell.")]
         shell: Shell,
     },
@@ -110,14 +113,14 @@ enum ServeCommands {
         /// The hostname to bind to (default: 127.0.0.1)
         #[arg(short, 
             long,
-            env = "MYFIRSTCLAP_HOSTNAME",
+            env = "MYFIRSTCLAP_SERVE_HELLO_HOSTNAME",
             default_value = "127.0.0.1")]
         hostname: String,
 
         /// The port to listen on (default: 3000)
         #[arg(short, 
             long,
-            env = "MYFIRSTCLAP_PORT",
+            env = "MYFIRSTCLAP_SERVE_HELLO_PORT",
             default_value_t = 3000)]
         port: u16,
     },

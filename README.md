@@ -19,13 +19,14 @@ The project showcases how to define and parse command-line arguments using Clap,
     - [2.2.1. You do not have goreleaser installed ? Use this method to create a temp container](#221-you-do-not-have-goreleaser-installed--use-this-method-to-create-a-temp-container)
     - [2.2.2. Use `goreleaser-rust-cross`](#222-use-goreleaser-rust-cross)
 - [3. Usage](#3-usage)
-  - [3.1. Print help message](#31-print-help-message)
-  - [3.2. Print simple oneliner version information](#32-print-simple-oneliner-version-information)
-  - [3.3. Print detailed version information in JSON format](#33-print-detailed-version-information-in-json-format)
-  - [3.4. Print very detailed version information in JSON format (full vergen)](#34-print-very-detailed-version-information-in-json-format-full-vergen)
-  - [3.5. Log level](#35-log-level)
-  - [3.6. Build terminal completion scripts](#36-build-terminal-completion-scripts)
-    - [3.6.1. Example with fish](#361-example-with-fish)
+  - [3.1. User input priority: CLI \> env vars \> default](#31-user-input-priority-cli--env-vars--default)
+  - [3.2. Print help message](#32-print-help-message)
+  - [3.3. Print simple oneliner version information](#33-print-simple-oneliner-version-information)
+  - [3.4. Print detailed version information in JSON format](#34-print-detailed-version-information-in-json-format)
+  - [3.5. Print very detailed version information in JSON format (full vergen)](#35-print-very-detailed-version-information-in-json-format-full-vergen)
+  - [3.6. Log level](#36-log-level)
+  - [3.7. Build terminal completion scripts](#37-build-terminal-completion-scripts)
+    - [3.7.1. Example with fish](#371-example-with-fish)
 
 
 ## 1. Quickstart
@@ -124,7 +125,53 @@ dist/
 
 ## 3. Usage
 
-### 3.1. Print help message
+### 3.1. User input priority: CLI > env vars > default
+
+`myfirstclap` allows users to configure settings through multiple sources, with the highest priority given to CLI flags (clap), followed by environment variables, The default settings are used if no other sources provide a value.
+
+Each CLI flag (e.g. `--log-level`) has a corresponding environment variable (e.g. `KMS_K8S_PLUGIN_LOG_LEVEL`).
+
+**Note** For now config files are not supported yet.
+
+| Priority Order                   | Source                                               | Example                            |
+|----------------------------------|------------------------------------------------------|------------------------------------|
+| 1️⃣ CLI Flag                     | `--log-level debug`                                  | Highest priority                   |
+| 2️⃣ Environment Variable         | `MYFIRSTCLAP_LOG_LEVEL=trace`                        | Overrides config file & default    |
+| [**NOT WORKING**]3️⃣ Config File | [**NOT WORKING**]`log-level: warn` in YAML/TOML/JSON | [**NOT WORKING**]Overrides default |
+| 4️⃣ Default Value                | `info` (from Cobra)                                  | Used if nothing else is set        |
+
+
+Flag `--port 1111` takes precedence over the environment variable `MYFIRSTCLAP_SERVE_HELLO_PORT=2222`:
+
+```bash
+MYFIRSTCLAP_SERVE_HELLO_PORT=2222  myfirstclap serve hello --hostname 0.0.0.0 --port 1111
+```
+
+```log
+2025-04-03T19:04:35.478Z INFO  serve::hello > Listening on http://0.0.0.0:1111
+```
+
+The environment variable `MYFIRSTCLAP_PORT=2222` takes precedence over the clap default value which is `3000`.
+
+```bash
+MYFIRSTCLAP_SERVE_HELLO_PORT=2222  myfirstclap serve hello --hostname 0.0.0.0
+```
+
+```log
+2025-04-03T19:06:04.179Z INFO  serve::hello > Listening on http://0.0.0.0:2222
+```
+
+Default values when no CLI flag nor environment variable is set.
+
+```bash
+myfirstclap serve hello
+```
+
+```log
+2025-04-03T19:08:29.446Z INFO  serve::hello > Listening on http://127.0.0.1:3000
+```
+
+### 3.2. Print help message
 
 ```bash
 myfirstclap 
@@ -143,12 +190,12 @@ Commands:
   help        Print this message or the help of the given subcommand(s)
 
 Options:
-      --log-level <LOG_LEVEL>  Set the log verbosity level [default: info] [possible values: error, warn, info, debug, trace]
+      --log-level <LOG_LEVEL>  Set the log verbosity level [env: MYFIRSTCLAP_LOG_LEVEL=] [default: info] [possible values: error, warn, info, debug, trace]
   -h, --help                   Print help
   -V, --version                Print version
 ```
 
-### 3.2. Print simple oneliner version information
+### 3.3. Print simple oneliner version information
 
 Both `version` and `-V` use the `git2` crate to extract the version information from the current Git repository, and not
 from the cargo version.
@@ -174,7 +221,7 @@ root@0057b779a97b:/# myfirstclap -V
 myfirstclap v0.4.0
 ```
 
-### 3.3. Print detailed version information in JSON format
+### 3.4. Print detailed version information in JSON format
 
 This is using `vergen-git2` from https://github.com/rustyhorde/vergen, and also
 using the regular `git2` crate (for the `git describe --tags --always --dirty`)
@@ -210,7 +257,7 @@ myfirstclap version -o json
 This `version` command could became a crate from clap, like clap-version, which could give the same
 result.
 
-### 3.4. Print very detailed version information in JSON format (full vergen)
+### 3.5. Print very detailed version information in JSON format (full vergen)
 
 This is probably overkil. This command is only here to see the full features from vergen.
 I might add some of these fields to the regular `version -o json` command.
@@ -261,7 +308,7 @@ myfirstclap version --output full
 }
 ```
 
-### 3.5. Log level
+### 3.6. Log level
 
 The root CLI support setting the log level.
 
@@ -278,7 +325,7 @@ myfirstclap --log-level=trace serve hello
  2025-03-26T11:59:37.709Z ERROR serve::hello > much error
 ```
 
-### 3.6. Build terminal completion scripts
+### 3.7. Build terminal completion scripts
 
 ```bash
 myfirstclap completion -h
@@ -293,7 +340,7 @@ Options:
   -h, --help           Print help
 ```
 
-#### 3.6.1. Example with fish
+#### 3.7.1. Example with fish
 
 ```bash
 myfirstclap completion -s fish > ~/.config/fish/completions/myfirstclap.fish
