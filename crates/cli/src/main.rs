@@ -1,14 +1,17 @@
 use anyhow::Result;
 use clap_complete::{generate, Shell};
+use clap_config::ClapConfig;
 use clap::{Parser, Subcommand, CommandFactory, ValueEnum};
 use pretty_env_logger;
 use std::env;
 use std::io;
+use std::fs;
+use serde::{Serialize, Serializer};
 
 use log::info;
 
 /// a local enum that mirrors the log::Level enum and derives the necessary traits
-#[derive(ValueEnum, Clone)]
+#[derive(ValueEnum, Clone, serde::Serialize, serde::Deserialize, Debug)]
 enum LogLevel {
     Error,
     Warn,
@@ -31,10 +34,19 @@ impl ToString for LogLevel {
 }
 
 /// Root CLI of myfirstclap.
-#[derive(Parser)]
+#[derive(Parser, ClapConfig, Debug)]
 #[command(name = "myfirstclap")]
 #[command(version = version::get_describe())]
 pub struct Cli {
+    /// path to the configuration file
+    #[arg(long, 
+        default_value = "config.toml",
+        global = true,
+        env = "MYFIRSTCLAP_CONFIG",
+        help = "Path to the configuration file")]
+    pub config: String,
+
+    /// set log level
     #[arg(long, 
         default_value = "info",
         env = "MYFIRSTCLAP_LOG_LEVEL",
@@ -47,7 +59,7 @@ pub struct Cli {
 }
 
 /// Supported output formats for the version CLI command
-#[derive(ValueEnum, Clone)]
+#[derive(ValueEnum, Clone, serde::Serialize, serde::Deserialize, Debug)]
 enum VersionOutputFormat {
     Text,
     Json,
@@ -65,8 +77,23 @@ impl ToString for VersionOutputFormat {
     }
 }
 
+
+
+#[derive(serde::Serialize, serde::Deserialize)]
+#[serde(transparent)]
+pub struct SerializableShell(pub Shell);
+
+impl Serialize for SerializableShell {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        serializer.serialize_str(&format!("{:?}", self.0))
+    }
+}
+
 /// Level 1 subcommands for myfirstclap.
-#[derive(Subcommand)]
+#[derive(Subcommand, serde::Serialize, serde::Deserialize, Debug, Clone)]
 enum Commands {
     /// A more detailed version command with information from the build.
     Version {
@@ -93,7 +120,7 @@ enum Commands {
             default_value = "bash",
             value_enum,
             help = "Target shell.")]
-        shell: Shell,
+        shell: SerializableShell,
     },
     /// NOT WORKING YET Generate a man page for this application
     Man {
@@ -103,7 +130,7 @@ enum Commands {
 }
 
 /// Level 2 subcommands of serve
-#[derive(Subcommand)]
+#[derive(Subcommand, serde::Serialize, serde::Deserialize, Debug, Clone)]
 enum ServeCommands {
     /// Start the Hello server
     Hello {
@@ -141,6 +168,20 @@ enum ServeCommands {
 fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let cli = Cli::parse();
 
+    // You can use any file format that implements Deserialize.
+    let config_str = fs::read_to_string(&cli.config).unwrap();
+
+    // Build an ArgMatches so we can see where each value comes from.
+    let matches = <Cli as CommandFactory>::command().get_matches();
+    // Build an instance of the auto-generated <YourStruct>Config struct
+    let config: CliConfig = serde_yaml::from_str(&config_str).unwrap();
+
+    // Merge the two together into your actual struct.
+    let cli_config_flags = Cli::from_merged(matches, Some(config));
+
+    println!("{:?}", cli_config_flags);
+
+
     // Initialize logging and set log level
     env::set_var("RUST_LOG", &cli.log_level.to_string());
     pretty_env_logger::init_timed();
@@ -153,7 +194,7 @@ fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
         Commands::Completion { shell } => {
             let mut cmd = Cli::command();
             generate(shell, &mut cmd, "myfirstclap", &mut io::stdout());
-        }
+        },
         Commands::Man { output } => {
             info!("Man page feature is not ready yet. The man page file {} was not generated.", output);
         }
