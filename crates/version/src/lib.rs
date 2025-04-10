@@ -9,7 +9,6 @@ pub struct VersionInfo {
     build_timestamp: &'static str,
     git_commit_date: &'static str,
     git_describe: &'static str,
-    git_describe_tags: &'static str,
     git_sha: &'static str,
     os_version: &'static str,
 }
@@ -21,15 +20,14 @@ pub fn get_version() -> VersionInfo {
         build_timestamp: env!("VERGEN_BUILD_TIMESTAMP"),
         git_commit_date: env!("VERGEN_GIT_COMMIT_DATE"),
         git_describe: env!("VERGEN_GIT_DESCRIBE"),
-        git_describe_tags: env!("GIT_DESCRIBE_TAGS"),
         git_sha: env!("VERGEN_GIT_SHA"),
         os_version: env!("VERGEN_SYSINFO_OS_VERSION"),
     }
 }
 
-// get only git describe from vergen
-pub fn get_describe() -> &'static str {
-    env!("GIT_DESCRIBE_TAGS")
+/// get only git describe --tags --dirty --always from vergen_git2
+pub fn get_vergen_git2_describe() -> &'static str {
+    env!("VERGEN_GIT_DESCRIBE")
 }
 
 /// Retrieves comprehensive versioning and build-time information as a JSON object.
@@ -91,7 +89,6 @@ pub fn get_full_version_info() -> serde_json::Value {
         "git_commit_message": option_env!("VERGEN_GIT_COMMIT_MESSAGE").unwrap_or("Unknown"),
         "git_commit_timestamp": option_env!("VERGEN_GIT_COMMIT_TIMESTAMP").unwrap_or("Unknown"),
         "git_describe": env!("VERGEN_GIT_DESCRIBE"),
-        "git_describe_tags": env!("GIT_DESCRIBE_TAGS"),
         "git_dirty": option_env!("VERGEN_GIT_DIRTY").unwrap_or("Unknown"),
         "git_sha": env!("VERGEN_GIT_SHA"),
         "rustc_channel": option_env!("VERGEN_RUSTC_CHANNEL").unwrap_or("Unknown"),
@@ -153,8 +150,8 @@ pub fn run(output: String, pretty: bool) -> Result<()> {
             }
         }
         _ => {
-            // Default output: print just the git_describe
-            println!("{}", version_info.git_describe_tags);
+            // Default output: print just the git_describe from vergen_git2
+            println!("{}", version_info.git_describe);
         }
     }
 

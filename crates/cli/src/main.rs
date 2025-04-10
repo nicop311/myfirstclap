@@ -33,7 +33,7 @@ impl ToString for LogLevel {
 /// Root CLI of myfirstclap.
 #[derive(Parser)]
 #[command(name = "myfirstclap")]
-#[command(version = version::get_describe())]
+#[command(version = version::get_vergen_git2_describe())]
 pub struct Cli {
     #[arg(long, 
         default_value = "info",
